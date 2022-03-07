@@ -2,16 +2,20 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 export default function Home() {
-  function handleDeploy() {
-    console.log('Attempted deployment')
-  }
-
   async function uploadToServer(event) {
     const body = new FormData()
+    body.append("file", event.target.files[0])
     const response = await fetch("/api/file", {
       method: "POST",
       body
     })
+    
+    const responseJson = await response.json()
+    const contractFilename = responseJson.filename
+
+    if (response.status === 201) {
+      localStorage.setItem('contract', contractFilename)
+    }
   }
 
   return (
